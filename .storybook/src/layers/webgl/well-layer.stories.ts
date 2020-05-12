@@ -1,15 +1,27 @@
-import { CementLayer } from '../../../../src/layers/CementLayer';
-import { Cement, OnRescaleEvent, CementLayerOptions, HoleSize, Casing, HoleSizeLayerOptions, CasingLayerOptions } from '../../../../src/interfaces';
+import { WellLayer } from '../../../../src/layers/WellLayer';
+import {
+  Cement,
+  OnRescaleEvent,
+  CementLayerOptions,
+  HoleSize,
+  Casing,
+  HoleSizeLayerOptions,
+  CasingLayerOptions,
+  WellLayerOptions,
+} from '../../../../src/interfaces';
 
 import { ZoomPanHandler } from '../../../../src/control/ZoomPanHandler';
 import { createRootContainer, createLayerContainer, createFPSLabel } from '../../utils';
 
-import { IntersectionReferenceSystem, HoleSizeLayer, CasingLayer } from '../../../../src';
+import { IntersectionReferenceSystem, HoleSizeLayer, CasingLayer, Controller, GridLayer, WellborepathLayer } from '../../../../src';
 
-import { mockedWellborePath, casingData, holeSizeData, cementData } from '../../exampledata';
+import { poslog, mockedWellborePath, casingData, holeSizeData, cementData } from '../../exampledata';
 
-export const CementLayerBasic = () => {
-  const referenceSystem = new IntersectionReferenceSystem([
+export const WellLayerBasic = () => {
+  // const fpsLabel = createFPSLabel();
+
+  // [EASTING, NORTHING, TVD, MD] See order in PoslogIndex enum
+  const wellXVolvePosLog = [
     [0.0, 0, 138.2, 138.2],
     [0.0, 0, 150.0, 150.0],
     [0.0, 0, 180.0, 180.0],
@@ -242,55 +254,54 @@ export const CementLayerBasic = () => {
     [673.47, 1849.9, 6615.97, 6960.0],
     [676.98, 1859.54, 6644.16, 6990.0],
     [680.49, 1869.18, 6672.35, 7020.0],
-  ]);
+  ];
 
-  const casingOptions: CasingLayerOptions = {
-    order: 3,
-    referenceSystem,
-    data: getWellXData().casings,
+  const width = 700;
+  const height = 600;
+
+  const xRange = 600;
+  const yRange = 500;
+  const xbounds: [number, number] = [0, 1000];
+  const ybounds: [number, number] = [0, 1000];
+
+  const scaleOptions = { xMin: xbounds[0], xMax: xbounds[1], yMin: ybounds[0], yMax: ybounds[1], height: yRange, width: xRange };
+  const axisOptions = {
+    xLabel: 'Displacement',
+    yLabel: 'TVD MSL',
+    unitOfMeasure: 'm',
   };
 
-  const holeOptions: HoleSizeLayerOptions = {
+  const referenceSystem = new IntersectionReferenceSystem(wellXVolvePosLog);
+
+  referenceSystem.offset = wellXVolvePosLog[0][3];
+
+  const options: WellLayerOptions = {
     order: 2,
-    referenceSystem,
-    data: getWellXData().holes,
-  };
-
-  const cementOptions: CementLayerOptions = {
-    order: 1,
     referenceSystem,
     data: getWellXData(),
   };
 
-  const casingLayer = new CasingLayer('webgl', casingOptions);
-  const holeSizeLayer = new HoleSizeLayer('webgl', cementOptions);
-  const cementLayer = new CementLayer('webgl', holeOptions);
-
-  const width = 400;
-  const height = 800;
+  const wellLayer = new WellLayer('webgl', options);
 
   const root = createRootContainer(width);
   const container = createLayerContainer(width, height);
 
-  holeSizeLayer.onMount({ elm: container, height, width });
-  casingLayer.onMount({ elm: container, height, width });
-  cementLayer.onMount({ elm: container, height, width });
-
-  holeSizeLayer.onUpdate({ data: getWellXData().holes });
-  casingLayer.onUpdate({ data: getData().casings });
-  cementLayer.onUpdate({ data: getWellXData() });
-
-  const zoomHandler = new ZoomPanHandler(container, (event: OnRescaleEvent) => {
-    holeSizeLayer.onRescale(event);
-    casingLayer.onRescale(event);
-    cementLayer.onRescale(event);
+  const controller = new Controller({
+    referenceSystem,
+    path: wellXVolvePosLog,
+    axisOptions,
+    scaleOptions,
+    container,
   });
-  zoomHandler.setBounds([0, 1000], [0, 1000]);
-  zoomHandler.adjustToSize(width, height);
-  zoomHandler.zFactor = 1;
-  zoomHandler.setTranslateBounds([-5000, 6000], [-5000, 6000]);
-  zoomHandler.enableTranslateExtent = false;
-  zoomHandler.setViewport(1000, 1000, 5000);
+
+  controller.addLayer(new GridLayer('grid', { order: 1 }));
+  const wellBorePathLayer = new WellborepathLayer('wellborepath', { order: 3, strokeWidth: '2px', stroke: 'red', referenceSystem });
+  controller.addLayer(wellBorePathLayer);
+  controller.addLayer(wellLayer);
+
+  controller.setBounds(xbounds, ybounds);
+  controller.adjustToSize(width, height);
+  controller.setViewport(1000, 1000, 5000);
 
   // root.appendChild(fpsLabel);
   root.appendChild(container);

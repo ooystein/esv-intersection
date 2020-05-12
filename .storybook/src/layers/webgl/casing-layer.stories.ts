@@ -95,16 +95,7 @@ const getData = () => {
 };
 
 const getSampleDataData = () => {
-  const data: Casing[] = [
-    { diameter: 30, start: 0, length: 500, hasShoe: false, innerDiameter: 30 - 1 },
-    { diameter: 29, start: 500, length: 500, hasShoe: false, innerDiameter: 29 - 1 },
-    { diameter: 28, start: 1000, length: 500, hasShoe: true, innerDiameter: 28 - 1 },
-    { diameter: 26, start: 1500, length: 500, hasShoe: true, innerDiameter: 26 - 1 },
-    { diameter: 20, start: 2000, length: 500, hasShoe: true, innerDiameter: 20 - 1 },
-    { diameter: 18, start: 2500, length: 500, hasShoe: true, innerDiameter: 18 - 1 },
-    { diameter: 16, start: 3000, length: 500, hasShoe: true, innerDiameter: 16 - 1 },
-    { diameter: 10, start: 3500, length: 500, hasShoe: true, innerDiameter: 10 - 1 },
-  ];
+  const data: Casing[] = [{ diameter: 30, start: 0, length: 4000, hasShoe: false, innerDiameter: 30 - 1 }];
   data.forEach((x) => (x.end = x.start + x.length));
   return data;
 };

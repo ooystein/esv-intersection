@@ -61,11 +61,11 @@ export class HoleSizeLayer extends WellboreBaseComponentLayer {
     const { top, bottom, left, right } = generateHoleCoords(normalOffsetCoordsUp, normalOffsetCoordsDown);
     const polygonCoords = [...left, ...right];
     const mask = this.drawBigPolygon(polygonCoords);
-    const casingWallWidth = 1;
+    const holeWallWidth = 1;
 
     this.createRopeTextureBackground(wellBorePathCoords, texture, mask);
 
-    this.drawLine(polygonCoords, lineColor, casingWallWidth);
+    this.drawLine(polygonCoords, lineColor, holeWallWidth);
     this.drawLine(top, topBottomLineColor, 1);
     this.drawLine(bottom, topBottomLineColor, 1);
   };

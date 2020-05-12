@@ -11,6 +11,7 @@ import {
   Casing,
   OnMountEvent,
 } from '../interfaces';
+import { polygonHull } from 'd3';
 
 export const StaticWellboreBaseComponentIncrement = 0.1;
 
@@ -59,6 +60,7 @@ export class WellboreBaseComponentLayer extends PixiLayer {
   };
 
   createRopeTextureBackground = (coords: Point[], texture: Texture, mask: Graphics): SimpleRope => {
+    debugger;
     const rope: SimpleRope = new SimpleRope(texture, coords);
     rope.mask = mask;
     this.ctx.stage.addChild(rope);
@@ -76,6 +78,7 @@ export class WellboreBaseComponentLayer extends PixiLayer {
     this.ctx.stage.addChild(line);
   };
 
+  // TODO fix spelling, missing t
   createTexure = (maxWidth: number, firstColor: string, secondColor: string, startPctOffset = 0): Texture => {
     const halfWayPct = 0.5;
     const canvas = document.createElement('canvas');

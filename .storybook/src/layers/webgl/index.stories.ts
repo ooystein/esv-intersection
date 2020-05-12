@@ -1,3 +1,4 @@
+export * from './well-layer.stories';
 export * from './holesize-layer.stories';
 export * from './casing-layer.stories';
 export * from './geomodel-layer.stories';

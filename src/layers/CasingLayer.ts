@@ -48,7 +48,7 @@ export class CasingLayer extends WellboreBaseComponentLayer {
     const texture = this.createTexure(maxDiameter * maxTextureDiameterScale, firstColor, secondColor);
     sizes
       .sort((a: any, b: any) => (a.data.diameter <= b.data.diameter ? 1 : -1)) // draw smaller casings and holes inside bigger ones if overlapping
-      .map((s: any) => this.drawHoleSize(s, texture));
+      .map((s: any) => this.drawCasing(s, texture));
   }
 
   drawHoleSize = (holeObject: HoleObjectData, defaultTexture: Texture): void => {

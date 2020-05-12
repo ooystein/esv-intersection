@@ -118,6 +118,7 @@ export const HighlightWellborepathWithController = () => {
   return root;
 };
 
+// Should this layer be included in the library?
 class HighlightLayer extends HTMLLayer {
   elements: Selection<HTMLElement, any, null, undefined>[] = [];
 
@@ -161,17 +162,18 @@ class HighlightLayer extends HTMLLayer {
 }
 
 const onUpdate = (event: InputEvent, obj: any) => {
+  console.log(event.target.valueAsNumber);
   obj.layer.onRescale({ ...obj.rescaleEvent, curveLength: event.target.valueAsNumber });
 };
 
 const createSlider = (cb: any, opts: any) => {
   const slider = document.createElement('input');
   let val = 0;
-  slider.type = 'range';
+  slider.type = 'number';
   slider.value = val.toString();
-  slider.min = `${opts.min || 0}`;
-  slider.max = `${opts.max || 10}`;
-  slider.setAttribute('style', `width:${opts.width}px`);
+  // slider.min = `${opts.min || 0}`;
+  // slider.max = `${opts.max || 10}`;
+  // slider.setAttribute('style', `width:${opts.width}px`);
   slider.oninput = cb;
   return slider;
 };
