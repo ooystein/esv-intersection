@@ -21,8 +21,8 @@ export const createNormalCoords = (s: HoleObjectData): NormalCoordsObject => {
     return { wellBorePathCoords, normalOffsetCoordsDown: wellBorePathCoords, normalOffsetCoordsUp: wellBorePathCoords };
   }
 
-  const tension = 0.2;
-  const numPoints = 999;
+  const tension = 0.2; // Should this be the same as tension passed in to IntersectionReferenceSystem construtor?
+  const numPoints = 999; // What is this? should it be using some configurable number? Is it related to arcDivisions or StaticWellboreBaseComponentIncrement
   const normalOffsetCoordsUpInterpolator = new CurveInterpolator(normalOffsetCoordsUpOrig.map(pointToArray), tension);
   const normalOffsetCoordsDownInterpolator = new CurveInterpolator(normalOffsetCoordsDownOrig.map(pointToArray), tension);
   const normalOffsetCoordsUp = normalOffsetCoordsUpInterpolator.getPoints(numPoints).map(arrayToPoint);

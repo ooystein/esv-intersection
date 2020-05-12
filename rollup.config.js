@@ -26,9 +26,6 @@ export default [
       }),
       resolve(),
       commonjs(),
-      terser({
-        mangle: false,
-      }),
     ],
   },
   {
@@ -45,9 +42,6 @@ export default [
         typescript: require('typescript'),
       }),
       commonjs(),
-      terser({
-        mangle: false,
-      }),
     ],
   },
 ];

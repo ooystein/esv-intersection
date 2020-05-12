@@ -81,11 +81,29 @@ export interface CementLayerOptions extends WellComponentBaseOptions {
   rotation?: number;
 }
 
+export interface WellLayerOptions extends WellComponentBaseOptions {
+  holeOuterColor: string;
+  holeInnerColor: string;
+  holeLineColor: number;
+  casingOuterColor: string;
+  casingInnerColor: string;
+  casingLineColor: number;
+  cementFillColor: string;
+  cementStipeColor: string;
+  cementLineColor: string;
+
+  percentFirstColor?: number;
+  rotation?: number;
+}
+
 export interface WellComponentBaseOptions extends LayerOptions {
+  // TODO remove these
   firstColor?: string;
   secondColor?: string;
   lineColor?: number;
   topBottomLineColor?: number;
+  //
+
   maxTextureDiameterScale?: number;
   margins?: number;
   minFontSize?: number;
@@ -123,21 +141,22 @@ export interface Annotation {
 
 export interface HoleSize {
   diameter: number;
-  length: number;
-  start: number;
-  end: number;
+  length: number; // Can we remove this?
+  start: number; // can we rename this to top? or mdTop
+  end: number; // rename to bottom or mdBottom?
   hasShoe?: boolean;
   innerDiameter?: number;
 }
 
 export interface Casing {
   diameter: number;
-  length: number;
+  length: number; // Can we remove this?
   start: number;
   end: number;
   hasShoe: boolean;
   innerDiameter: number;
   casingId: string;
+  // We might need to add id along with casingId
 }
 export interface CompiledCement {
   toc: number;
@@ -146,7 +165,9 @@ export interface CompiledCement {
   intersectingItems: any;
 }
 export interface Cement {
-  toc: number;
+  toc: number; // any benefit of calling it toc over being consisten and use same names as for hole and casing, start/top?
+  // Could we have bottom of cement here? Would it be problematic to render cement below related casing?
+  // If we require boc the applications will have higher flexibility in what they can render. Would still use casingId for masking
   casingId: string; // TODO find the actual ID
 }
 
