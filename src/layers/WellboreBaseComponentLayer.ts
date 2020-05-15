@@ -13,7 +13,7 @@ import {
 } from '../interfaces';
 import { polygonHull } from 'd3';
 
-export const StaticWellboreBaseComponentIncrement = 0.1;
+export const StaticWellboreBaseComponentIncrement = 0.5;
 
 export class WellboreBaseComponentLayer extends PixiLayer {
   options: HoleSizeLayerOptions;
@@ -61,7 +61,6 @@ export class WellboreBaseComponentLayer extends PixiLayer {
   };
 
   createRopeTextureBackground = (coords: Point[], texture: Texture, mask: Graphics): SimpleRope => {
-    debugger;
     const rope: SimpleRope = new SimpleRope(texture, coords);
     rope.mask = mask;
     this.ctx.stage.addChild(rope);

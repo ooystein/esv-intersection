@@ -152,7 +152,7 @@ export abstract class Layer {
 
   onUpdate(event: OnUpdateEvent): void {
     if (event.data) {
-      this._data = event.data;
+      this._data = event.data; // onUpdate() is called from setData. And both assign even.data to this._data
     }
     if (this._options.onUpdate) {
       this._options.onUpdate(event, this);
