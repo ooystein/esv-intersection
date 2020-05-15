@@ -25,7 +25,7 @@ export abstract class HTMLLayer extends Layer {
       .style('opacity', this.opacity)
       .style('overflow', 'hidden')
       .style('pointer-events', interactive)
-      .attr('z-index', this.order);
+      .style('z-index', this.order);
   }
 
   onUnmount(): void {
