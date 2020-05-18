@@ -202,7 +202,7 @@ export class WellLayer extends WellboreBaseComponentLayer {
     return points;
   };
 
-  createSimplePolygonPath = (c: CompiledCement): any => {
+  createSimplePolygonPath = (c: CompiledCement): Point[] => {
     const middle = this.createMiddlePath(c);
     const points: { left: Point[]; right: Point[] } = { left: [], right: [] };
     let prevPoint = null;
@@ -250,7 +250,7 @@ export class WellLayer extends WellboreBaseComponentLayer {
     // const line = [...sideLeftMiddleR, ...points.left];
     // this.drawLine(line, 0xff0000);
     console.log(cementRectCoords.length, ' lengde');
-    return { path: middle, coords: cementRectCoords };
+    return cementRectCoords;
   };
 
   createCementShapes(cement: Cement[], casings: any, holes: any): any {
@@ -265,10 +265,7 @@ export class WellLayer extends WellboreBaseComponentLayer {
     // bigSquareBackgroundTest.endFill();
     // this.ctx.stage.addChild(bigSquareBackgroundTest);
 
-    paths.map((p) => {
-      const mask = this.drawBigPolygon(p.coords);
-      this.createRopeTextureBackground(p.path, t, mask);
-    });
+    paths.map((p) => this.drawBigPolygon(p, t));
   }
 
   createCementTexture = (): Texture => {
