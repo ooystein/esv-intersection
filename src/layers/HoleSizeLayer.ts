@@ -41,7 +41,7 @@ export class HoleSizeLayer extends WellboreBaseComponentLayer {
       return;
     }
 
-    const sizes: HoleObjectData[] = data.map((d: HoleSize) => this.generateHoleSizeData(d));
+    const sizes: HoleObjectData[] = data.map((d: HoleSize) => this.generateHoleSizeData(d)).filter((d: HoleSize) => d);
 
     const maxDiameter = Math.max(...sizes.map((s: HoleObjectData) => s.data.diameter));
     const texture = this.createTexure(maxDiameter * maxTextureDiameterScale, firstColor, secondColor);

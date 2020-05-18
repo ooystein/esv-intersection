@@ -99,14 +99,27 @@ export class WellboreBaseComponentLayer extends PixiLayer {
   };
 
   generateHoleSizeData = (data: HoleSize | Casing): HoleObjectData => {
+    // Fix bug where
+    if (data.length < StaticWellboreBaseComponentIncrement) {
+      return null
+    }
     const points: any = [];
 
     // Add distance to points
+    // "i < data.start + data.length" does this prevent us from getting the potential last point at data.end? can we change to >=?
     for (let i = data.start; i < data.start + data.length; i += StaticWellboreBaseComponentIncrement) {
       const p = this.referenceSystem.project(i);
       points.push({ point: new Point(p[0], p[1]), md: i });
     }
 
-    return { data: { ...data, diameter: data.diameter }, points, hasShoe: data.hasShoe, innerDiameter: data.innerDiameter };
+    return {
+      data: {
+        ...data,
+        diameter: data.diameter // what does this do? doesn't previous line cover it?
+      },
+      points,
+      hasShoe: data.hasShoe,
+      innerDiameter: data.innerDiameter
+    };
   };
 }
