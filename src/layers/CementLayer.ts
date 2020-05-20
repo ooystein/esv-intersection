@@ -73,6 +73,12 @@ export class CementLayer extends WellboreBaseComponentLayer {
       for (let md = c.toc; md < c.boc; md += StaticWellboreBaseComponentIncrement) {
         // create normal for sections
         const offsetItem = getClosestRelatedItem(c.intersectingItems, md);
+
+        // Workaround for bug https://github.com/equinor/esv-intersection/issues/266
+        // This is no solution to the bug as I think the logic that brought us here is flawed
+        if (!offsetItem) {
+          continue;
+        }
         const start = md;
         md = Math.min(c.boc, offsetItem != null ? offsetItem.end : c.boc); // set next calc MD
 
