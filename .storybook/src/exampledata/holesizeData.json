@@ -48,9 +48,9 @@
     "innerDiameter": 12.25
   },
   {
-    "length": 1000,
+    "length": 0.1,
     "start": 3000,
-    "end": 4000,
+    "end": 3000.1,
     "hasShoe": true,
     "diameter": 8.5,
     "innerDiameter": 8.5
