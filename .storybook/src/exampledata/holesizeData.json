@@ -1,5 +1,58 @@
 [
-  { "start": 0, "end": 0, "length": 400, "diameter": 36 },
-  { "start": 400, "end": 0, "length": 400, "diameter": 22 },
-  { "start": 800, "end": 0, "length": 700, "diameter": 10 }
+  {
+    "length": 57.80000000000001,
+    "start": 142.2,
+    "end": 200,
+    "hasShoe": true,
+    "diameter": 36,
+    "innerDiameter": 36
+  },
+  {
+    "length": 800,
+    "start": 200,
+    "end": 1000,
+    "hasShoe": true,
+    "diameter": 26,
+    "innerDiameter": 26
+  },
+  {
+    "length": 1000,
+    "start": 1000,
+    "end": 2000,
+    "hasShoe": true,
+    "diameter": 16,
+    "innerDiameter": 16
+  },
+  {
+    "length": 500,
+    "start": 2000,
+    "end": 2500,
+    "hasShoe": true,
+    "diameter": 12.25,
+    "innerDiameter": 12.25
+  },
+  {
+    "length": 150,
+    "start": 2500,
+    "end": 2650,
+    "hasShoe": true,
+    "diameter": 13.5,
+    "innerDiameter": 13.5
+  },
+  {
+    "length": 350,
+    "start": 2650,
+    "end": 3000,
+    "hasShoe": true,
+    "diameter": 12.25,
+    "innerDiameter": 12.25
+  },
+  {
+    "length": 1000,
+    "start": 3000,
+    "end": 4000,
+    "hasShoe": true,
+    "diameter": 8.5,
+    "innerDiameter": 8.5
+  }
 ]

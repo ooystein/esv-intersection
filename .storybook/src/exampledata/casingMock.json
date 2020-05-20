@@ -1,7 +1,47 @@
 [
-  { "start": 0, "length": 100, "diameter": 28, "innerDiameter": 26, "hasShoe": false },
-  { "start": 0, "length": 250, "diameter": 20, "innerDiameter": 19, "hasShoe": true },
-  { "start": 250, "length": 350, "diameter": 10, "innerDiameter": 9, "hasShoe": true },
-  { "start": 600, "length": 400, "diameter": 8, "innerDiameter": 7, "hasShoe": true },
-  { "start": 1000, "length": 400, "diameter": 7.5, "innerDiameter": 6.5, "hasShoe": true }
+  {
+    "length": 59,
+    "start": 140,
+    "end": 199,
+    "hasShoe": true,
+    "diameter": 30,
+    "innerDiameter": 29.4,
+    "casingId": "144838668"
+  },
+  {
+    "length": 855,
+    "start": 140,
+    "end": 995,
+    "hasShoe": true,
+    "diameter": 20.000000000000004,
+    "innerDiameter": 19.4,
+    "casingId": "144838671"
+  },
+  {
+    "length": 1855,
+    "start": 140,
+    "end": 1995,
+    "hasShoe": true,
+    "diameter": 13,
+    "innerDiameter": 12.4,
+    "casingId": "144838674"
+  },
+  {
+    "length": 2855,
+    "start": 140,
+    "end": 2995,
+    "hasShoe": true,
+    "diameter": 10.000000000000002,
+    "innerDiameter": 9.4,
+    "casingId": "144838677"
+  },
+  {
+    "length": 1048,
+    "start": 2950,
+    "end": 3998,
+    "hasShoe": true,
+    "diameter": 7,
+    "innerDiameter": 6.4,
+    "casingId": "144838681"
+  }
 ]
