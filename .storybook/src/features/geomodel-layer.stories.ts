@@ -8,11 +8,18 @@ import {
   OnRescaleEvent,
   IntersectionReferenceSystem,
   Controller,
+  WellborepathLayer,
+  CalloutCanvasLayer,
+  Annotation,
 } from '../../../src';
-import { generateSurfaceData, SurfaceData } from '../../../src/datautils';
+import { generateSurfaceData, SurfaceData, convertColor, SurfaceLine, SurfaceArea } from '../../../src/datautils';
 import { getSurfaces, getStratColumns, getPositionLog, getWellborePath } from '../data';
 
 import { createRootContainer, createLayerContainer, createFPSLabel, createHelpText } from '../utils';
+
+import pozoData from '../exampledata/POZO/intersection.json';
+import pozoPosLog from '../exampledata/POZO/positionLog D-32.json';
+import pozoPlannedWellMarkers from '../exampledata/POZO/plannedWellMarkers D-32.json';
 
 const width = 700;
 const height = 600;
@@ -233,6 +240,101 @@ export const GeoModelCanvasUsingHighLevelInterface = () => {
       'High level interface for creating and displaying geo model (aka surfaces). This layer is made using plain HTML canvas. GeomodelLayer is preferred for rendering geo models if your browser supports WebGL.',
     ),
   );
+  root.appendChild(container);
+  root.appendChild(fpsLabel);
+
+  return root;
+};
+
+export const GeoModelWithLabelsUsingPozoData = () => {
+  const xBounds: [number, number] = [0, 1000];
+  const yBounds: [number, number] = [0, 1000];
+
+  const scaleOptions = { xBounds, yBounds };
+  const axisOptions = {
+    xLabel: 'Displacement',
+    yLabel: 'TVD MSL',
+    unitOfMeasure: 'm',
+  };
+
+  const root = createRootContainer(width);
+  const container = createLayerContainer(width, height);
+  const fpsLabel = createFPSLabel();
+
+  const offset = pozoPosLog[0].md;
+  const referenceSystem = new IntersectionReferenceSystem(
+    pozoPosLog.reverse().map((d) => [d.easting, d.northing, d.tvdMsl]),
+    { calculateDisplacementFromBottom: true },
+  );
+  referenceSystem.offset = offset;
+
+  console.log('start', referenceSystem.startVector);
+  console.log('end', referenceSystem.endVector);
+
+  const options: GeomodelLayerOptions = { order: 1 };
+  const geoModelLayer = new GeomodelLayerV2('geomodels', options);
+  geoModelLayer.onMount({ elm: container, height, width });
+
+  const options2: LayerOptions = { order: 2 };
+  const geoModelLabelsLayer = new GeomodelLabelsLayer('labels', options2);
+  geoModelLabelsLayer.onMount({ elm: container });
+
+  const wellboreLayer = new WellborepathLayer('wellborepath', { order: 3, strokeWidth: '2px', stroke: 'red' });
+
+  const picksLayer = new CalloutCanvasLayer('picks', { order: 4 });
+
+  const lines: SurfaceLine[] = pozoData.lines.map((p) => ({
+    id: p.label,
+    label: p.label,
+    width: 2,
+    color: convertColor(p.color),
+    data: p.data.map((d) => [d.xl, d.yt]),
+  }));
+  const areas: SurfaceArea[] = pozoData.areas
+    .filter((p) => p.exclude == false)
+    .map((p) => ({
+      id: p.label,
+      label: p.label,
+      color: convertColor(p.color),
+      data: p.data.map((d) => [d.xl, d.yt, d.yb]),
+    }));
+
+  const geolayerdata: SurfaceData = {
+    lines,
+    areas,
+  };
+
+  const datumElevation = 74.3;
+  const picksdata: Annotation[] = pozoPlannedWellMarkers.map((m) => ({
+    title: m.markerName,
+    label: Math.round((m.markerDepthMdMsl + datumElevation) * 10) / 10 + 'm MD RKB',
+    md: m.markerDepthMdMsl + datumElevation,
+    group: 'picks',
+    color: 'black',
+  }));
+
+  const opts = {
+    scaleOptions,
+    axisOptions,
+    container,
+    referenceSystem,
+    layers: [geoModelLayer, geoModelLabelsLayer, wellboreLayer, picksLayer],
+  };
+
+  const controller = new Controller(opts);
+  controller.setReferenceSystem(referenceSystem);
+
+  geoModelLayer.setData(geolayerdata);
+  geoModelLabelsLayer.setData(geolayerdata);
+  picksLayer.setData(picksdata);
+
+  controller.adjustToSize(width, height);
+  controller.zoomPanHandler.zFactor = 3;
+  controller.zoomPanHandler.setTranslateBounds([-5000, 6000], [-5000, 6000]);
+  controller.zoomPanHandler.enableTranslateExtent = false;
+  controller.setViewport(2250, 1400, 5000);
+
+  root.appendChild(createHelpText('High level interface for creating and displaying geo model in dataformat used by POZO.'));
   root.appendChild(container);
   root.appendChild(fpsLabel);
 
