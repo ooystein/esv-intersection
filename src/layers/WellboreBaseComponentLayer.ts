@@ -1,5 +1,5 @@
-import { Graphics, Texture, Point, SimpleRope } from 'pixi.js';
-import { merge } from 'd3-array';
+import { Graphics, Texture, Point, SimpleRope, RENDERER_TYPE } from 'pixi.js';
+import { merge, max } from 'd3-array';
 import { PixiLayer } from './base/PixiLayer';
 import { HoleSizeLayerOptions, OnUpdateEvent, OnRescaleEvent, OnMountEvent, WellComponentBaseOptions, MDPoint } from '../interfaces';
 
@@ -157,12 +157,12 @@ export class WellboreBaseComponentLayer extends PixiLayer {
     this.ctx.stage.addChild(rope);
   }
 
-  drawRope(path: Point[], texture: Texture): void {
+  drawRope(path: Point[], texture: Texture, scale = 1): void {
     if (path.length === 0) {
       return null;
     }
 
-    const rope: SimpleRope = new SimpleRope(texture, path, 1);
+    const rope: SimpleRope = new SimpleRope(texture, path, scale);
     this.ctx.stage.addChild(rope);
   }
 
@@ -199,5 +199,80 @@ export class WellboreBaseComponentLayer extends PixiLayer {
     this._textureCache[cacheKey] = t;
 
     return this._textureCache[cacheKey];
+  }
+  createHoleTexture(maxWidth: number, startPctOffset: number = 0): Texture {
+    const cacheKey = `${maxWidth}X${startPctOffset}`;
+    if (this._textureCache.hasOwnProperty(cacheKey)) {
+      return this._textureCache[cacheKey];
+    }
+
+    const { firstColor, secondColor } = this.options as HoleSizeLayerOptions;
+
+    const offsets = [0, 2, 4, 2, 4, 5, 3, 2, 0, 3, 4, 3, 2].map((x) => x * 3);
+    const maxOffset = max(offsets);
+    const midOffset = maxOffset / 2;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 4200;
+    canvas.height = maxWidth > 0 ? maxWidth + (maxOffset + 2) * 2 : canvas.width; // TODO needs to grow with scale
+    const canvasCtx = canvas.getContext('2d');
+
+    const start = 11;
+    const end = canvas.height - 11;
+
+    const left = [];
+    const right = [];
+    let tmpYMD = 1;
+    let localBottomPointPx = canvas.width;
+    let i = 0;
+    while (localBottomPointPx > 0) {
+      i += 1;
+      i %= offsets.length;
+      tmpYMD += offsets[i] * 5;
+      localBottomPointPx -= tmpYMD;
+      if (localBottomPointPx <= 0) {
+        localBottomPointPx = 0;
+      }
+
+      const newXOffset = Math.round(offsets[i]);
+      left.push([localBottomPointPx, start + newXOffset]);
+      right.push([localBottomPointPx, end - newXOffset]);
+    }
+    right.reverse();
+
+    const strokePath = new Path2D();
+    strokePath.moveTo(canvas.width, start + midOffset);
+    left.forEach((p) => strokePath.lineTo(p[0], p[1]));
+    strokePath.lineTo(0, start + midOffset);
+
+    strokePath.moveTo(0, end - midOffset);
+    right.forEach((p) => strokePath.lineTo(p[0], p[1]));
+    strokePath.lineTo(canvas.width, end - midOffset);
+
+    canvasCtx.lineWidth = 8;
+    canvasCtx.strokeStyle = '#8b4513';
+    canvasCtx.stroke(strokePath);
+
+    const path = new Path2D();
+    path.moveTo(canvas.width, start + midOffset);
+    left.forEach((p) => path.lineTo(p[0], p[1]));
+    path.lineTo(0, start + midOffset);
+
+    path.lineTo(0, end - midOffset);
+    right.forEach((p) => path.lineTo(p[0], p[1]));
+    path.lineTo(canvas.width, end - midOffset);
+
+    path.closePath();
+    canvasCtx.fillStyle = createGradientFill(canvas, canvasCtx, firstColor, secondColor, startPctOffset);
+    canvasCtx.fill(path);
+
+    const t = Texture.from(canvas);
+    this._textureCache[cacheKey] = t;
+
+    return this._textureCache[cacheKey];
+  }
+
+  get renderType(): RENDERER_TYPE {
+    return this.ctx.renderer.type;
   }
 }

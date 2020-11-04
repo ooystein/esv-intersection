@@ -3,7 +3,7 @@ import { HoleSizeLayerOptions, OnMountEvent, OnUpdateEvent, OnRescaleEvent, Hole
 import { makeTubularPolygon } from '../datautils/wellboreItemShapeGenerator';
 import { createNormals, offsetPoints } from '../utils/vectorUtils';
 import { HOLE_OUTLINE } from '../constants';
-import { Point } from 'pixi.js';
+import { Point, RENDERER_TYPE } from 'pixi.js';
 
 export class HoleSizeLayer extends WellboreBaseComponentLayer {
   options: HoleSizeLayerOptions;
@@ -50,7 +50,7 @@ export class HoleSizeLayer extends WellboreBaseComponentLayer {
 
     const { maxTextureDiameterScale } = this.options;
 
-    const texture = this.createTexture(holeObject.diameter * maxTextureDiameterScale);
+    const texture = this.createHoleTexture(holeObject.diameter * maxTextureDiameterScale * 8);
 
     const path = this.getZFactorScaledPathForPoints(holeObject.start, holeObject.end, [holeObject.start, holeObject.end]);
     const pathPoints = path.map((p) => p.point);
@@ -70,8 +70,9 @@ export class HoleSizeLayer extends WellboreBaseComponentLayer {
     this.drawRope(
       pathPoints.map((p) => new Point(p[0], p[1])),
       texture,
+      1 / 8,
     );
 
-    this.drawLine(polygonCoords, lineColor, HOLE_OUTLINE, true);
+    // this.drawLine(polygonCoords, lineColor, HOLE_OUTLINE, true);
   };
 }
