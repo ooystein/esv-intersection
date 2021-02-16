@@ -200,6 +200,7 @@ export class WellboreBaseComponentLayer extends PixiLayer {
 
     return this._textureCache[cacheKey];
   }
+
   createHoleTexture(maxWidth: number, startPctOffset: number = 0): Texture {
     const cacheKey = `${maxWidth}X${startPctOffset}`;
     if (this._textureCache.hasOwnProperty(cacheKey)) {
