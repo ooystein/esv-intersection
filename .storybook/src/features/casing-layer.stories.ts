@@ -49,7 +49,18 @@ export const CasingUsingHighLevelInterface = () => {
   const container = createLayerContainer(width, height);
 
   Promise.all([getWellborePath(), getCasings()]).then((values) => {
-    const [path, casings] = values;
+    const [path, casingsx] = values;
+    const casings = [
+      {
+        casingId: '1',
+        start: 140,
+        end: 1500,
+        diameter: 30,
+        innerDiameter: 28,
+        hasShoe: true,
+        csd: true,
+      },
+    ];
     const referenceSystem = new IntersectionReferenceSystem(path);
 
     const options: CasingLayerOptions = {
@@ -57,7 +68,6 @@ export const CasingUsingHighLevelInterface = () => {
       referenceSystem,
     };
     const casingLayer = new CasingLayer('webgl', options);
-
 
     const controller = new Controller({ container, layers: [casingLayer] });
     casingLayer.setData(casings);
@@ -69,7 +79,6 @@ export const CasingUsingHighLevelInterface = () => {
     controller.zoomPanHandler.enableTranslateExtent = false;
     controller.setViewport(1000, 1000, 5000);
   });
-
 
   root.appendChild(createHelpText('High level interface for creating and displaying casing. This layer is made using webGL.'));
   root.appendChild(container);

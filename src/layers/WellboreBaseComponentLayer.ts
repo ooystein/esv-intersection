@@ -27,7 +27,9 @@ export abstract class WellboreBaseComponentLayer extends PixiLayer {
   onUpdate(event: OnUpdateEvent): void {
     super.onUpdate(event);
     this.clear();
-    this.render();
+    setTimeout(() => {
+      this.render();
+    }, 0);
   }
 
   onRescale(event: OnRescaleEvent): void {
@@ -48,7 +50,9 @@ export abstract class WellboreBaseComponentLayer extends PixiLayer {
 
     if (shouldRender) {
       this.clear();
-      this.render();
+      setTimeout(() => {
+        this.render();
+      }, 0);
     }
   }
 
@@ -145,7 +149,7 @@ export abstract class WellboreBaseComponentLayer extends PixiLayer {
       return null;
     }
 
-    const rope: SimpleRope = new SimpleRope(texture, path, 1);
+    const rope: SimpleRope = new SimpleRope(texture, path, 0);
 
     rope.tint = tint || rope.tint;
 

@@ -6,6 +6,8 @@ import { createNormals, offsetPoint, offsetPoints } from '../utils/vectorUtils';
 import { SHOE_LENGTH, SHOE_WIDTH } from '../constants';
 
 export class CasingLayer extends WellboreBaseComponentLayer {
+  asyncTexture: Texture;
+
   constructor(id?: string, options?: CasingLayerOptions) {
     super(id, options);
     this.options = {
@@ -14,6 +16,14 @@ export class CasingLayer extends WellboreBaseComponentLayer {
       lineColor: 0x575757,
       ...options,
     };
+    const csdComponent = 'http://127.0.0.1:8080/tubing%20swivel.svg';
+    // const csdComponent = 'http://127.0.0.1:8080/Pup%20Joint%20w.%20Centralizer.svg';
+
+    // const csdComponent = 'http://127.0.0.1:8080/csd-comp.png';
+    // const csdComponent = 'http://127.0.0.1:8080/csd-app.png';
+    Texture.fromURL(csdComponent).then((value) => {
+      this.asyncTexture = value;
+    });
   }
 
   render(): void {
@@ -37,6 +47,8 @@ export class CasingLayer extends WellboreBaseComponentLayer {
     const diameter = casing.diameter * exaggerationFactor;
     const innerDiameter = casing.innerDiameter * exaggerationFactor;
 
+    const length = casing.end - casing.start;
+
     const radius = diameter / 2;
     const innerRadius = innerDiameter / 2;
 
@@ -55,7 +67,9 @@ export class CasingLayer extends WellboreBaseComponentLayer {
     if (this.renderType() === RENDERER_TYPE.CANVAS) {
       this.drawBigPolygon(polygon, solidColor);
     } else {
-      const texture = this.createTexture(diameter);
+      // @ts-ignore
+      const texture = this.createTexture(diameter, length, casing.csd);
+
       this.drawRope(
         pathPoints.map((p) => new Point(p[0], p[1])),
         texture,
@@ -63,9 +77,10 @@ export class CasingLayer extends WellboreBaseComponentLayer {
       );
     }
 
-    this.drawOutline(leftPath, rightPath, lineColor, casingWallWidth, true);
+    // this.drawOutline(leftPath, rightPath, lineColor, casingWallWidth, true);
 
-    if (casing.hasShoe) {
+    // @ts-ignore
+    if (casing.hasShoe && !casing.csd) {
       this.drawShoe(casing.end, radius);
     }
   };
@@ -97,8 +112,13 @@ export class CasingLayer extends WellboreBaseComponentLayer {
     return [...shoeEdge, shoeTip];
   };
 
-  createTexture(diameter: number): Texture {
+  createTexture(diameter: number, length: number, csd = false): Texture {
     const textureWidthPO2 = 16;
+
+    if (csd) {
+      return new Texture(this.asyncTexture.baseTexture, null, new Rectangle(0, 0, 0, diameter), null, 2);
+    }
+
     return new Texture(Texture.WHITE.baseTexture, null, new Rectangle(0, 0, textureWidthPO2, diameter));
   }
 }

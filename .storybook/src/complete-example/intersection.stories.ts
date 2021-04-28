@@ -100,7 +100,20 @@ const renderIntersection = (scaleOptions) => {
     const geomodelLayer = new GeomodelLayerV2('geomodel', { order: 2, layerOpacity: 0.6, data: geolayerdata });
     const wellboreLayer = new WellborepathLayer('wellborepath', { order: 3, strokeWidth: '2px', stroke: 'red', referenceSystem });
     const holeSizeLayer = new HoleSizeLayer('holesize', { order: 4, data: holesizes, referenceSystem });
-    const casingLayer = new CasingLayer('casing', { order: 5, data: casings, referenceSystem });
+
+    const experimentalCasings = [
+      ...casings,
+      {
+        casingId: '50',
+        start: 139.7,
+        end: 1500,
+        diameter: 30,
+        innerDiameter: 28,
+        hasShoe: true,
+        csd: true,
+      },
+    ];
+    const casingLayer = new CasingLayer('casing', { order: 5, data: experimentalCasings, referenceSystem });
     const geomodelLabelsLayer = new GeomodelLabelsLayer('geomodellabels', { order: 3, data: geolayerdata });
     const seismicLayer = new SeismicCanvasLayer('seismic', { order: 1 });
     const completionLayer = new CompletionLayer('completion', { order: 4, data: completion, referenceSystem });
@@ -308,7 +321,7 @@ const createSetLayerButton = (cementLayer: any, casingLayer: any, cement: any, c
   btn.setAttribute('style', 'width: 130px;height:32px;margin-top:12px;');
   btn.onclick = () => {
     const alterWBI = (c: any): any => {
-      return { ...c, end: c.end += 15 };
+      return { ...c, end: (c.end += 15) };
     };
     casings[0] = alterWBI(casings[0]);
     holes[0] = alterWBI(holes[0]);
